@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>NYC Public Restrooms</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="journey.css">
+<script defer src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script><script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script defer src="data.js"></script><script defer src="journey.js"></script></head>
+<body><a class="skip" href="#results">Skip to results</a>
+<header><a class="brand" href="index.html"><span class="brand-icon" aria-hidden="true">↗</span> NYC Public Restrooms</a><nav aria-label="Main"><a href="explore.html">Explore the data</a><a href="game.html">Play game</a></nav></header>
+<main><div id="journey-map" aria-label="Map of public restrooms"></div><div class="map-shade"></div>
+<section id="welcome" class="welcome"><h1>Find a public bathroom near you in New York City</h1><p class="step">Where are you?</p><button class="primary locate">↗ &nbsp; Use my location</button><p class="privacy">We do not save your location. Selecting a bathroom sends your starting point and destination to the routing service for directions.</p><div id="search-home"></div><button id="explore-nyc" class="text-button explore-link">Explore NYC without sharing my location →</button></section>
+<div id="search-box"><form id="search-form"><label for="place">Enter an address, neighborhood, or ZIP</label><div id="search-choices" aria-label="Location suggestions"></div><div class="input-row"><input id="place" type="search" placeholder="Try Williamsburg or 10003" required autocomplete="off"><button id="search-submit" aria-label="Search location">→</button></div></form><p id="message" role="status" aria-live="polite"></p></div>
+<section id="workspace" hidden><div class="map-tools"><button id="search-area">Search this area</button><button id="return">↖ Return to start</button></div><aside id="results" tabindex="-1"><button id="sheet-toggle" aria-expanded="true">Nearby bathrooms <span>⌄</span></button><div id="sheet-content"><p id="origin-label"></p><div class="location-actions"><button id="change" class="text-button">Change location</button><button class="text-button locate">Use my location</button></div><div id="search-away"></div><p class="estimate-note">All walking times are estimates. Actual times may vary.</p><section id="route-panel" hidden aria-label="Walking directions"><h2 id="route-title"></h2><p id="route-status" role="status" aria-live="polite"></p><details><summary>Step-by-step directions</summary><ol id="route-steps"></ol></details></section><div id="cards"></div><p id="empty" hidden>No mapped facilities are available here. Try another location.</p><p class="footnote">Listed access is not guaranteed. Check hours and any restrictions before setting out.</p></div></aside></section>
+<div class="map-key"><span class="key-dot"></span> Public restroom <span class="key-dot origin"></span> Starting point</div></main>
+</body></html>
+
+
+
+
+
+
+
+
+

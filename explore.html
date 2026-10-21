@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NYC Public Restrooms — Undercurrents</title>
+
+  <!-- D3 powers filtering, data joins, markers, and charts. -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+
+  <!-- Leaflet supplies the street basemap; D3 draws the restroom layer on top. -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div>
+      <h1>NYC Public Restrooms</h1>
+      <p class="subtitle">Mapping overlooked infrastructure through listed schedules, accessibility, and uncertainty.</p>
+    </div>
+
+  </header>
+
+  <nav class="frame-nav" aria-label="Prototype frames"><a href="index.html" style="padding:12px;color:inherit">← Find nearby bathrooms</a>
+    <button class="frame-tab active" data-frame="1">Overview</button>
+    <button class="frame-tab" data-frame="2">Day + time</button>
+    <button class="frame-tab" data-frame="3">Accessibility</button>
+    <button class="frame-tab" data-frame="4">Uncertainty</button>
+  </nav>
+
+  <main>
+    <div class="header-meta">
+      <span>Not real-time access</span>
+    </div>
+    <section class="frame active" id="frame-1">
+      <div class="frame-heading">
+        <div>
+          <h2>Where are NYC’s listed public restrooms?</h2>
+          <p>View all bathrooms listed as operational in the dataset.</p>
+        </div>
+      </div>
+
+      <div class="layout map-layout">
+        <aside class="panel controls-panel">
+          <h3>Public restroom infrastructure</h3>
+          <p class="body-copy">The map shows all facilities retained in the operational dashboard export.</p>
+
+          <div class="big-stat">
+            <strong id="overview-total">973</strong>
+            <span>facilities listed as operational</span>
+          </div>
+
+          <div class="legend" id="overview-legend">
+            <div><span class="swatch known"></span><span>Hours interpretable</span><b id="overview-known-count"></b></div>
+            <div><span class="swatch conditional"></span><span>Conditional / qualified schedule</span><b id="overview-conditional-count"></b></div>
+            <div><span class="swatch unknown"></span><span>Hours missing or unresolved</span><b id="overview-unknown-count"></b></div>
+          </div>
+
+          <label class="field-label" for="overview-search">Find a facility</label>
+          <input id="overview-search" class="text-input" type="search" placeholder="Search by name or operator" list="facility-suggestions" autocomplete="off" />
+          <datalist id="facility-suggestions"></datalist>
+
+        </aside>
+
+        <div class="map-card">
+          <div id="map-1" class="map"></div>
+          <div class="map-caption">D3 data layer over an OpenStreetMap basemap. Click a point for details.</div>
+        </div>
+
+        <aside class="panel detail-panel" id="detail-1"></aside>
+      </div>
+    </section>
+
+    <section class="frame" id="frame-2">
+      <div class="frame-heading">
+        <div>
+          <h2>When is a restroom listed as open?</h2>
+          <p>Choose a day and time. The map updates from the weekly schedule.</p>
+        </div>
+      </div>
+
+      <div class="layout map-layout">
+        <aside class="panel controls-panel">
+          <div class="control-group">
+            <label class="field-label" for="day-select-2">Day</label>
+            <select id="day-select-2" class="select-input day-select"></select>
+          </div>
+
+          <div class="control-group">
+            <div class="range-label-row">
+              <label class="field-label" for="time-slider-2">Time</label>
+              <output id="time-output-2">2:00 PM</output>
+            </div>
+            <input id="time-slider-2" class="time-slider" type="range" min="0" max="1439" step="15" value="840" />
+          </div>
+
+          <h3 class="section-label">Show map categories</h3>
+          <div class="checkbox-list" id="availability-checks-2">
+            <label><input type="checkbox" value="open" checked /><span class="swatch open"></span>Listed open</label>
+            <label><input type="checkbox" value="closed" checked /><span class="swatch closed"></span>Listed closed</label>
+            <label><input type="checkbox" value="conditional" checked /><span class="swatch conditional"></span>Conditional</label>
+            <label><input type="checkbox" value="unknown" checked /><span class="swatch unknown"></span>Hours unknown</label>
+          </div>
+
+          <div class="metric-grid" id="time-metrics"></div>
+
+        </aside>
+
+        <div class="map-card">
+          <div id="map-2" class="map"></div>
+          <div class="map-caption">Qualified schedules use an orange outline even when the selected time falls inside an explicit base interval.</div>
+        </div>
+
+        <aside class="panel detail-panel" id="detail-2"></aside>
+      </div>
+    </section>
+
+    <section class="frame" id="frame-3">
+      <div class="frame-heading">
+        <div>
+          <h2>Availability changes when needs are specific</h2>
+          <p>Filter by source-listed accessibility and changing-station information to see how many practical options remain.</p>
+        </div>
+      </div>
+
+      <div class="layout map-layout">
+        <aside class="panel controls-panel">
+          <div class="two-col-controls">
+            <div class="control-group">
+              <label class="field-label" for="day-select-3">Day</label>
+              <select id="day-select-3" class="select-input day-select"></select>
+            </div>
+            <div class="control-group">
+              <label class="field-label" for="time-slider-3">Time</label>
+              <output id="time-output-3">2:00 PM</output>
+            </div>
+          </div>
+          <input id="time-slider-3" class="time-slider" type="range" min="0" max="1439" step="15" value="840" />
+
+          <h3 class="section-label">Accessibility</h3>
+          <div class="checkbox-list accessibility-list" id="accessibility-checks">
+            <label><input type="checkbox" value="fully_accessible" checked />Fully accessible</label>
+            <label><input type="checkbox" value="partially_accessible" />Partially accessible</label>
+            <label><input type="checkbox" value="limited_accessibility" />Limited accessibility</label>
+            <label><input type="checkbox" value="not_accessible" />Not accessible</label>
+            <label><input type="checkbox" value="unknown" />Unknown</label>
+          </div>
+
+          <h3 class="section-label">Changing station</h3>
+          <select id="changing-filter" class="select-input">
+            <option value="all">Any value</option>
+            <option value="yes">Yes — at least one listed</option>
+            <option value="no">No</option>
+            <option value="unknown">Unknown</option>
+          </select>
+
+          <h3 class="section-label">Facility type</h3>
+          <select id="type-filter" class="select-input">
+            <option value="all">All facility types</option>
+          </select>
+
+          <div class="result-stat">
+            <strong id="filter-result-count">0</strong>
+            <span>facilities match the filters</span>
+          </div>
+          <p class="mini-copy">Map color still represents the selected day/time status.</p>
+        </aside>
+
+        <div class="map-card">
+          <div id="map-3" class="map"></div>
+          <div class="map-caption">The accessibility labels are reproduced from the source categories; this prototype does not claim legal ADA compliance.</div>
+        </div>
+
+        <aside class="panel detail-panel" id="detail-3"></aside>
+      </div>
+    </section>
+
+    <section class="frame" id="frame-4">
+      <div class="frame-heading">
+        <div>
+          <h2>Graphing the data</h2>
+          <p>Summarize a typical listed week while keeping conditional and unknown schedules visible.</p>
+        </div>
+      </div>
+
+      <div class="map-card summary-map"><div id="map-4" class="map"></div></div>
+      <div class="layout uncertainty-layout">
+        <aside class="panel controls-panel">
+          <div class="control-group">
+            <div class="range-label-row">
+              <label class="field-label" for="time-slider-4">Selected time</label>
+              <output id="time-output-4">2:00 PM</output>
+            </div>
+            <input id="time-slider-4" class="time-slider" type="range" min="0" max="1439" step="15" value="840" />
+          </div>
+
+          <h3 class="section-label">View population</h3>
+          <div class="radio-list" id="summary-population">
+            <label><input type="radio" name="summary-pop" value="all" checked />All operational facilities</label>
+            <label><input type="radio" name="summary-pop" value="accessible" />Source-listed accessible</label>
+            <label><input type="radio" name="summary-pop" value="changing" />Changing station listed</label>
+          </div>
+
+        </aside>
+
+        <div class="summary-column">
+          <div class="panel chart-panel">
+            <div class="chart-title-row">
+              <div>
+                <h3>Weekly availability at the selected time</h3>
+                <p>Compare the same clock time across Monday–Sunday.</p>
+              </div>
+            </div>
+            <svg id="weekly-chart" role="img" aria-label="Stacked bar chart of restroom schedule states by weekday"></svg>
+          </div>
+        </div>
+
+        <aside class="panel definition-panel">
+          <h3>What the categories mean</h3>
+          <div class="definition"><span class="swatch open"></span><div><strong>Listed open</strong><p>Explicit listed interval includes the selected time.</p></div></div>
+          <div class="definition"><span class="swatch closed"></span><div><strong>Listed closed</strong><p>Known schedule excludes the selected time, or the day is explicitly closed.</p></div></div>
+          <div class="definition"><span class="swatch conditional"></span><div><strong>Conditional</strong><p>Access outside an explicit base interval depends on season, daylight, permits, or another unresolved condition.</p></div></div>
+          <div class="definition"><span class="swatch unknown"></span><div><strong>Hours unknown</strong><p>The selected day has missing, omitted, or unresolved schedule information.</p></div></div>
+
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div class="tooltip" id="tooltip"></div>
+
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
