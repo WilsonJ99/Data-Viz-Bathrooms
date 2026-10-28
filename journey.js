@@ -1,6 +1,8 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
+  $('game-invitation').hidden=false;
+  $('dismiss-game-invitation').onclick=()=>{$('game-invitation').hidden=true;document.querySelector('.game-link-wrap a').focus();};
   $('search-home').append($('search-box'));
   if (!window.L || !window.d3 || !window.RESTROOM_DATA) {
     $('message').textContent = 'The map libraries could not load. Please connect to the internet and reload.';
@@ -36,8 +38,17 @@
     if(routeLayer){map.removeLayer(routeLayer);routeLayer=null;}
     $('route-panel').hidden=true;$('route-steps').replaceChildren();
   }
+  function placeDirections(expanded){
+    const docked=expanded&&innerWidth>1000;
+    $('route-panel').classList.toggle('docked',docked);
+    if(docked)$('workspace').append($('route-panel'));
+    else $('sheet-content').insertBefore($('route-panel'),$('cards'));
+    $('route-details').open=expanded;
+    if(expanded){$('sheet-content').hidden=false;$('sheet-toggle').setAttribute('aria-expanded','true');}
+  }
+  $('route-close').onclick=()=>{$('route-panel').hidden=true;document.querySelector('.bathroom-card.selected .directions')?.focus();};
   function showRoute(f,focusRoute=false){
-    clearRoute();const version=routeVersion;const from=origin;
+    clearRoute();placeDirections(focusRoute);const version=routeVersion;const from=origin;
     $('route-panel').hidden=false;$('route-title').textContent='Walking to '+f.name;
     $('route-status').textContent='Finding a walking route…';
     const key=`${from.lat},${from.lng}:${f.facility_id}`;
@@ -46,8 +57,8 @@
       const route=data.routes[0];
       routeLayer=L.geoJSON(route.geometry,{style:{color:'#2068b1',weight:6,opacity:0.95},interactive:false}).addTo(map);
       const mobile=innerWidth<=760;
-      if(focusRoute && mobile){$('sheet-content').hidden=true;$('sheet-toggle').setAttribute('aria-expanded','false');$('sheet-toggle').focus({preventScroll:true});}
-      map.stop();map.fitBounds(routeLayer.getBounds().extend(from).extend([f.latitude,f.longitude]),{paddingTopLeft:[35,85],paddingBottomRight:mobile?[35,(focusRoute?70:Math.round(map.getSize().y*.58)+20)]:[440,55],maxZoom:focusRoute?18:17,animate:!reduced.matches});
+      if(focusRoute){$('route-panel').focus({preventScroll:true});if(innerWidth<=1000)$('route-panel').scrollIntoView({block:'nearest',behavior:'auto'});}
+      map.stop();map.fitBounds(routeLayer.getBounds().extend(from).extend([f.latitude,f.longitude]),{paddingTopLeft:[35,85],paddingBottomRight:mobile?[35,Math.round(map.getSize().y*.58)+20]:[focusRoute&&innerWidth>1000?780:440,55],maxZoom:focusRoute?18:17,animate:!reduced.matches});
       $('route-status').textContent=`About ${Math.max(1,Math.ceil(route.duration/60))} min walk · ${(route.distance/1000).toFixed(2)} km along the route`;
       const list=$('route-steps');list.replaceChildren();
       for(const step of route.legs.flatMap(leg=>leg.steps||[])){
@@ -153,7 +164,7 @@
     }catch(error){if(id===requestId)message('Address search is unavailable right now. Try your location or Explore NYC.');}
     finally{clearTimeout(timer);if(activeSearch===controller)activeSearch=null;}
   }
-  $('place').addEventListener('input',()=>{cancelSearch();clearSuggestions();message('');if($('place').value.trim().length>=3)searchTimer=setTimeout(searchPlaces,450);});
+  $('place').addEventListener('input',()=>{cancelSearch();clearSuggestions();message('');const q=$('place').value.trim();if(q.length>=3){if(searchCache.has(q.toLowerCase()))searchPlaces();else searchTimer=setTimeout(searchPlaces,250);}});
   $('search-form').onsubmit=event=>{event.preventDefault();cancelSearch();searchPlaces();};
   $('place').addEventListener('keydown',event=>{
     if(event.key==='Escape'){cancelSearch();clearSuggestions();message('');}
@@ -168,7 +179,7 @@
   $('search-area').onclick=()=>{const c=map.getCenter();$('search-box').hidden=false;start(c.lat,c.lng,`map center (${c.lat.toFixed(4)}, ${c.lng.toFixed(4)})`);};
   $('return').onclick=()=>{window.location.assign('index.html');};
   $('sheet-toggle').onclick=()=>{const open=$('sheet-toggle').getAttribute('aria-expanded')==='true';$('sheet-toggle').setAttribute('aria-expanded',String(!open));$('sheet-content').hidden=open;};
-  addEventListener('resize',()=>{if(innerWidth>760){$('sheet-content').hidden=false;$('sheet-toggle').setAttribute('aria-expanded','true');}});
+  addEventListener('resize',()=>{if(!$('route-panel').hidden)placeDirections($('route-details').open);if(innerWidth>760){$('sheet-content').hidden=false;$('sheet-toggle').setAttribute('aria-expanded','true');}});
 })();
 
 

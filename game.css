@@ -7,3 +7,19 @@
 #arrival{position:fixed;top:50%;bottom:auto;transform:translate(-50%,-50%);max-height:70dvh;z-index:900;border:2px solid #173c38}#arrival:focus{outline:none}#arrival-message{font-weight:600}#arrival-details{font-size:14px}#arrival-next{width:100%;margin-top:10px}
 
 #glass{pointer-events:auto;background:transparent;border:0;padding:0;width:48px;height:48px;line-height:1;cursor:pointer}#glass:disabled{opacity:1;cursor:default}#glass:focus-visible{outline:3px solid #ba642c;outline-offset:4px}
+
+/* The yellow level follows elapsed game time, including walking. */
+.game-hud{background:linear-gradient(to top,#fff0a8 0%,#fff0a8 var(--time-fill,0%),#f7f8f2 var(--time-fill,0%),#f7f8f2 100%)}
+
+.speed-control{display:flex;align-items:center;gap:6px;font-size:12px}.speed-control select{font:inherit;font-weight:600;color:#173c38;background:#fffdf1;border:1px solid #a5b5a8;border-radius:7px;min-height:44px;padding:8px}.speed-control select:focus-visible{outline:3px solid #ba642c;outline-offset:2px}
+
+/* Compact controls with larger, readable labels. */
+.game-hud{gap:8px 12px;padding:10px 14px;max-width:480px;font-size:17px}.game-hud #pause{padding:8px 14px;min-height:44px;font-size:16px}.game-hud p{font-size:14px;line-height:1.4}.speed-control{font-size:14px}.speed-control select{padding:6px 8px;font-size:16px}.game-hud #player{white-space:nowrap}.game-hud #clock{white-space:nowrap}
+@media(max-width:760px){.game-hud{gap:6px 10px;padding:10px 12px;font-size:16px}.game-hud button{margin-left:0}.game-hud p{font-size:14px}.speed-control{margin-left:auto}}
+
+/* Match the finder header. */
+header{height:80px;padding:0 36px;font-family:'DM Sans',sans-serif}header>a{font-family:'DM Sans',sans-serif;font-weight:800;font-size:18px}header nav{gap:12px}header nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;font-size:16px;font-weight:700;background:transparent;text-decoration:underline;text-underline-offset:4px}#play{height:calc(100dvh - 80px)}
+@media(max-width:760px){header{height:66px;padding:0 16px}header>a{font-size:12px}header nav{gap:6px}header nav a{font-size:14px;padding:8px 10px}#play{height:calc(100dvh - 66px)}}
+@media(max-width:420px){header{padding:0 10px}header>a{max-width:100px}header nav a{font-size:13px;padding:8px}}
+
+header nav{gap:6px}header nav a{padding-left:7px;padding-right:7px}@media(max-width:760px){header nav{gap:4px}header nav a{padding-left:5px;padding-right:5px}}

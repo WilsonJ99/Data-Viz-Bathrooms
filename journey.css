@@ -24,3 +24,16 @@ body:not(.exploring) .leaflet-control-zoom{display:none}
 #sheet-toggle{display:flex;justify-content:space-between;width:100%;border:0;background:transparent;padding:4px 0 14px;color:var(--ink);font-size:24px;line-height:1.25;font-weight:700;text-align:left}
 #route-panel{background:#eaf1f9;border:1px solid #bad0e7;border-radius:12px;padding:14px;margin:14px 0}#route-title{font-size:16px;line-height:1.4;margin:0 0 8px}#route-status{font-weight:600;line-height:1.5;font-size:13px}#route-panel summary{cursor:pointer;padding:8px 0}#route-steps{padding-left:22px;font-size:12px;line-height:1.6}#route-steps li{padding:5px 0}
 button.directions{width:100%;border:0;color:var(--ink);cursor:pointer}
+
+#route-panel.docked{position:absolute;right:430px;top:20px;width:320px;max-height:calc(100% - 40px);overflow:auto;margin:0;pointer-events:auto;box-shadow:0 12px 35px #173c3826}#route-close{float:right;background:transparent;border:0;color:var(--ink);font-size:24px;min-width:44px;min-height:44px}#route-title{padding-right:36px}#route-panel:focus-visible{outline:3px solid #b16620;outline-offset:2px}
+
+header nav{gap:12px}header nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border-radius:9px;background:#e5ebdf;font-size:16px;font-weight:700}.game-link-wrap{position:relative;display:inline-flex}.game-link-wrap>a{background:var(--accent)}.game-invitation{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:2px;z-index:1100}.pointing-hand{display:block;font-size:36px;line-height:1.2;animation:point-to-game 1.2s ease-in-out infinite}.game-invitation button{min-width:44px;min-height:44px;border:1px solid var(--line);border-radius:50%;background:var(--paper);color:var(--ink);font-size:22px}@keyframes point-to-game{0%,100%{transform:translateY(5px)}50%{transform:translateY(-4px)}}
+@media(max-width:760px){header nav{gap:6px}header nav a{font-size:14px;padding:8px 10px}.brand{font-size:12px}.brand-icon{display:none}}
+@media(max-width:420px){header{padding:0 10px}header nav a{font-size:13px;padding:8px}.brand{max-width:100px}}
+@media(prefers-reduced-motion:reduce){.pointing-hand{animation:none}}
+
+/* Shared header typography and an invitation above Leaflet controls. */
+header{z-index:2000;overflow:visible}.brand{font-family:'DM Sans',sans-serif}header nav a,.game-link-wrap>a{background:transparent;text-decoration:underline;text-underline-offset:4px}.game-invitation{z-index:2100;top:calc(100% + 12px);isolation:isolate}.pointing-hand{font-size:52px}.game-invitation button{flex-shrink:0;box-shadow:0 2px 8px #173c3833}
+
+header nav{gap:6px}header nav a{padding-left:7px;padding-right:7px}.game-invitation{left:calc(50% + 14px);gap:0}.game-invitation button{position:relative;min-width:44px;min-height:44px;width:44px;height:44px;padding:0;background:transparent;border:0;box-shadow:none;font-size:20px;isolation:isolate}.game-invitation button::before{content:'';position:absolute;inset:9px;border:1px solid var(--line);border-radius:50%;background:var(--paper);box-shadow:0 1px 5px #173c3826;z-index:-1}
+@media(max-width:760px){header nav{gap:4px}header nav a{padding-left:5px;padding-right:5px}}
