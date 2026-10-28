@@ -2,26 +2,6 @@
 
 This folder contains a working four-frame interactive prototype built from the cleaned NYC Public Restrooms dashboard export.
 
-## Open it
-
-The easiest option:
-
-1. Make sure you have an internet connection.
-2. Double-click `index.html`.
-3. The prototype loads D3.js and Leaflet from public CDNs and OpenStreetMap map tiles.
-
-For a classroom/demo setup, a local server is more reliable:
-
-```bash
-python -m http.server 8000
-```
-
-Then visit:
-
-```text
-http://localhost:8000
-```
-
 ## What each frame does
 
 1. **Overview**
